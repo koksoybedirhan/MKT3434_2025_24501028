@@ -1,42 +1,39 @@
 🔧 Changes Made
-Here is a summary of the modifications made to the base GUI project:
+Here is a structured summary of the modifications made to the base GUI project:
 
-✅ 1. Replaced deprecated dataset
-Replaced the deprecated load_boston() dataset from sklearn.datasets with fetch_california_housing() to ensure compatibility with the latest versions of scikit-learn.
+✅ 1. 🗂️ Replaced Deprecated Dataset
+🔄 Replaced the deprecated load_boston() dataset from sklearn.datasets with fetch_california_housing()
+📦 This ensures compatibility with the latest versions of scikit-learn.
 
-✅ 2. Fixed MNIST data formatting
-Reshaped and normalized the MNIST dataset:
+✅ 2. 🧮 Fixed MNIST Data Formatting
+📐 The MNIST dataset was reshaped and normalized:
 
-From shape (28, 28) to flat vectors (784,) using:
-
-python
-Kopyala
-Düzenle
 X_train.reshape(-1, 28*28).astype("float32") / 255.0
-This ensures the dataset works properly with dense neural networks.
+🔍 Converted 28x28 images to flat 784-length vectors.
+📊 This ensures proper input format for dense neural networks.
 
-✅ 3. Ensured proper data types before training
-Added conversion using np.asarray(...).astype("float32") before passing data into the model to avoid training errors.
+✅ 3. 🔄 Ensured Data Type Consistency Before Training
+💡 Added conversion using:
 
-✅ 4. Fixed duplicate train_neural_network() definition
-Removed one of the duplicate train_neural_network() functions to prevent unexpected behavior and confusion.
+np.asarray(...).astype("float32")
+🛡️ This prevents data type mismatches during model training and improves stability.
 
-✅ 5. Fixed Matplotlib canvas compatibility
-Replaced the incompatible import:
+✅ 4. 🧯 Removed Duplicate Method Definition
+🧹 Removed the duplicate train_neural_network() function.
+🎯 This prevents unexpected behavior and makes the code cleaner and more maintainable.
 
-python
-Kopyala
-Düzenle
+✅ 5. 🖼️ Fixed Matplotlib Canvas Compatibility
+🔁 Replaced incompatible backend import:
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-with:
+✨ With the PyQt6-compatible version:
 
-python
-Kopyala
-Düzenle
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-This makes the GUI compatible with PyQt6 and recent versions of Matplotlib.
+🧷 Also added .setParent(QWidget()) to treat the canvas properly as a QWidget in the layout.
 
-Additionally, added .setParent(QWidget()) to ensure FigureCanvas is treated correctly as a QWidget inside the layout.
+✅ 6. 📊 Added Progress Bar Reset at Training Start
+🧠 Implemented on_train_begin() method inside a custom Keras callback:
 
-✅ 6. Added progress bar reset at training start
-Implemented on_train_begin() method in the custom Keras callback to reset the training progress bar to 0% at the beginning of model training.
+def on_train_begin(self, logs=None):
+    self.progress_bar.setValue(0)
+📍 This resets the progress bar to 0% at the beginning of each training session, improving user feedback and experience.
