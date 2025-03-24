@@ -9,7 +9,8 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                            QDialog, QLineEdit)
 from PyQt6.QtCore import Qt
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from sklearn import datasets, preprocessing, model_selection
 from sklearn.linear_model import LinearRegression, LogisticRegression
@@ -23,6 +24,7 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import accuracy_score, mean_squared_error, confusion_matrix
 import tensorflow as tf
 from tensorflow.keras import layers, models, optimizers
+self.canvas = FigureCanvasQTAgg(self.figure)
 
 class MLCourseGUI(QMainWindow):
     def __init__(self):
@@ -66,10 +68,11 @@ class MLCourseGUI(QMainWindow):
             elif dataset_name == "Digits Dataset":
                 data = datasets.load_digits()
             elif dataset_name == "Boston Housing Dataset":
-                data = datasets.load_boston()
+                data = datasets.fetch_california_housing()
             elif dataset_name == "MNIST Dataset":
                 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
-                self.X_train, self.X_test = X_train, X_test
+                self.X_train = X_train.reshape(-1, 28*28).astype("float32") / 255.0
+                self.X_test = X_test.reshape(-1, 28*28).astype("float32") / 255.0
                 self.y_train, self.y_test = y_train, y_test
                 self.status_bar.showMessage(f"Loaded {dataset_name}")
                 return
@@ -700,8 +703,8 @@ class MLCourseGUI(QMainWindow):
                 X_train = self.X_train.reshape(-1, 1)
                 X_test = self.X_test.reshape(-1, 1)
             else:
-                X_train = self.X_train
-                X_test = self.X_test
+                X_train = np.asarray(self.X_train).astype("float32")
+                X_test = np.asarray(self.X_test).astype("float32")
             
             # One-hot encode target for classification
             y_train = tf.keras.utils.to_categorical(self.y_train)
@@ -795,7 +798,9 @@ class MLCourseGUI(QMainWindow):
             def __init__(self, progress_bar):
                 super().__init__()
                 self.progress_bar = progress_bar
-                
+                def on_train_begin(self, logs=None):
+                    self.progress_bar.setValue(0)
+                            
             def on_epoch_end(self, epoch, logs=None):
                 progress = int(((epoch + 1) / self.params['epochs']) * 100)
                 self.progress_bar.setValue(progress)
@@ -896,4 +901,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
