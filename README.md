@@ -1,46 +1,42 @@
-# ⚙️ MKT3434_2025
+🔧 Changes Made
+Here is a summary of the modifications made to the base GUI project:
 
-**MKT3434 Course of Dept. Mechatronics Eng. at YTU instructed by Ertugrul Bayraktar**
+✅ 1. Replaced deprecated dataset
+Replaced the deprecated load_boston() dataset from sklearn.datasets with fetch_california_housing() to ensure compatibility with the latest versions of scikit-learn.
 
----
+✅ 2. Fixed MNIST data formatting
+Reshaped and normalized the MNIST dataset:
 
-## 🚀 Overview
+From shape (28, 28) to flat vectors (784,) using:
 
-This repository provides a base GUI framework for students to develop and integrate machine learning methods. The GUI is built using PyQt6 and supports various classical machine learning and deep learning techniques. Students will extend this GUI by adding necessary functionalities over time.
+python
+Kopyala
+Düzenle
+X_train.reshape(-1, 28*28).astype("float32") / 255.0
+This ensures the dataset works properly with dense neural networks.
 
----
+✅ 3. Ensured proper data types before training
+Added conversion using np.asarray(...).astype("float32") before passing data into the model to avoid training errors.
 
-## 📚 Long-Term Homework Instructions
+✅ 4. Fixed duplicate train_neural_network() definition
+Removed one of the duplicate train_neural_network() functions to prevent unexpected behavior and confusion.
 
-Students are required to modify and enhance this GUI incrementally every three weeks. The objective is to build a fully functional and improved machine learning GUI.
+✅ 5. Fixed Matplotlib canvas compatibility
+Replaced the incompatible import:
 
-### 🎯 Key Requirements:
+python
+Kopyala
+Düzenle
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+with:
 
-*   **Insert Necessary Methods:** Integrate missing machine learning methods within the provided GUI framework.
-*   **Enhance the GUI:** The default interface is provided, but students are encouraged to improve usability and design.
-*   **Ensure Data and Method Appropriateness:** The datasets and algorithms should be compatible within the GUI structure.
-*   **Implement Training and Testing Processes:** Correctly implement model training and evaluation workflows.
-*   **Regular Submissions:** Submit updates every three weeks through Google Classroom for this course.
+python
+Kopyala
+Düzenle
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+This makes the GUI compatible with PyQt6 and recent versions of Matplotlib.
 
----
+Additionally, added .setParent(QWidget()) to ensure FigureCanvas is treated correctly as a QWidget inside the layout.
 
-## 🤝 Repository and Collaboration
-
-Students should fork this repository and develop their versions.
-
-Regular commits and documentation updates are expected.
-
----
-
-## 🏁 Getting Started
-
-### ⚙️ Prerequisites:
-
-Ensure you have the following installed:
-
-*   Python 3.8+
-
-### 📦 Required dependencies:
-
-```bash
-pip install numpy pandas matplotlib PyQt6 scikit-learn tensorflow torch torchvision torchaudio opencv-python opencv-contrib-python scipy fastai kornia
+✅ 6. Added progress bar reset at training start
+Implemented on_train_begin() method in the custom Keras callback to reset the training progress bar to 0% at the beginning of model training.
